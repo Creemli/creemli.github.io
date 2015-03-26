@@ -1,0 +1,10 @@
+---
+layout: post
+title: "First Post"
+description: "This is the first post on Github"
+category: 'Daily'
+tags: ['Notes']
+---
+{% include JB/setup %}
+
+Manifest 有个坑爹的地方， 用charles延迟manifest文件的请求然后改变当前页面的url（携程H5）， url切换之后再加载manifest，这个时候manifest会缓存切换之后的url。 -时序问题。
