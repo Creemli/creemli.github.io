@@ -55,3 +55,24 @@ var b = a; // 持有a，以回查
 a.x = a = {n:2};
 alert(a.x);// --> undefined
 alert(b.x);// --> [object Object]
+
+
+ /**
+     * 判断浏览器是否支持css3的某一个属性或者某一个属性值
+     * @param name
+     * @param val
+     * @returns {boolean}
+     */
+    function isSupport(name, val) {
+        var div = document.createElement('div');
+        if (name in div.style) {
+            if (val) {
+                div.style[name] = val;
+                return div.style[name] === val;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
