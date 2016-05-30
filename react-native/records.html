@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        html, body {
+            font-size: 18px;
+        }
+        .bold {
+            font-weight: bolder;
+        }
+    </style>
+</head>
+<body>
+
+    <p>
+        1. React-native 中的flex布局，必须对<span class="bold">父元素</span>（不能是父元素的父元素）使用flexDirection才能使子元素flex布局.
+    </p>
+    <p>
+        2. render方法返回的JSX貌似只能是View包裹的一个容器，不能是多个标签的组合。
+    </p>
+
+    <p>
+        3. flex布局中，如果设置了模块的高度，可以实现左侧跟右侧的模块数目不一样
+    </p>
+<p>
+    4. 在使用pod的时候， pod需要指定最新版本的Ract-Natiave 0.13.0-rc , 参照cocoapods 网站. 否则oc编译时报错 RCTRootView.h 找不到。
+</p>
+
+<p>
+    5. require(image!edd)  获取图片暂时有问题，未解决。
+</p>
+
+<p>
+    6. 官方Demo使用story board 连线， 实际项目中需要用到代码来连线，
+    <pre><code>@property (strong, nonatomic) ReactView *reactView;</code></pre>
+</p>
+<p>
+    7. 集成到App中会出现图片无法显示，或者只有一个红色的框， 解决方案是通过pod， 安装RCTImage依赖，
+    如果是一个RN 项目的话，确保RCTImage.xcodeproj 已经link到你的项目中
+</p>
+
+
+<p>
+    8. 集成到App里， 使用cocoapod。指向react-native 包里面的依赖
+    <code>
+        <pre>
+            pod 'React', :path => '/Users/apple/Desktop/pinganYZT/paone_ios/PAToapAPPNew/React/node_modules/react-native',
+:subspecs => [
+'Core',
+'RCTActionSheet',
+'RCTAdSupport',
+'RCTGeolocation',
+'RCTImage',
+'RCTNetwork',
+'RCTPushNotification',
+'RCTSettings',
+'RCTText',
+'RCTVibration',
+'RCTWebSocket',
+'RCTLinkingIOS'
+]
+        </pre>
+    </code>
+</p>
+
+	<p>
+		<h1>集成到现有App的踩坑之旅</h1>
+		<p>
+			1. 集成到android版本，需要配置好build.gradle文件。</p>
+			<p>2. 要是想要真正的跨平台，需要将RN单独起一个项目，否则，node_modules 文件夹在xcode, 或者android stadio 编译的时候都是会报错</p>
+			<p>3. 不同的组件使用起来不一致，尤其是触摸事件在android很不友好，在小米手机和nexus 上的表现都不一致。所以需要在代码中配置根据不同平台使用不同的组件，比如TouchableOpacity， 在小米上触发很不灵敏，有时候根本不触发，所以在android上使用TouchableNativeFeedback， 重新封装一个Touch组件，判断isAndroid || isIOS。</p>
+			<p>4. 图片问题。 要想使用原生的图片（IOS里的image.xcasets & Android 里面的res drawable 文件下的图片），需要用{ uri: ImageSets[index], isStatic: true }。 如果又想同时兼容react-web. 需要拷贝一份图片放在项目文件夹中。</p>
+			<p>5. Android编译的时候经常会出现这个那个的问题造成无法编译，如果确认自己真的没改过什么配置文件，果断重启IDE，不行就重启电脑。</p>
+		</p>
+	</p>
+
+
+
+</body>
+
+</html>

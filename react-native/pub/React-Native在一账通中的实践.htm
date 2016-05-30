@@ -1,0 +1,292 @@
+<!--
+    Powered By nodePPT - This is probably the best web presentation tool so far!
+    version: 1.4.1
+    site: https://github.com/ksky521/nodePPT
+    date: 
+-->
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>React-Native在一账通App中的实践 - By li.xx</title>
+    <link rel="stylesheet" media="all" href="./css/nodeppt.css">
+    <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="./css/phone.css">
+    
+    <link rel="stylesheet" href="./js/highlight/styles/monokai_sublime.css">
+    <link rel="stylesheet" href="./css/font-awesome.css">
+    
+<link rel="stylesheet" href="./css/theme.moon.css">
+</head>
+<body>
+<div class="slides">
+    <slides id="container">
+        <slide class="slide" style=""><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>React-Native在一账通App中的实践</h1>
+<p>    <small>2016-5-26</small>
+    <footer  class="pos-center"><small>金融科技研发中心</small></footer></p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>三个方面</h1>
+<ul>
+<li>OC</li>
+<li>JS</li>
+<li>热更新</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>Native底层架构</h2>
+    <image src="../images/oc.png" />
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>开始集成, 撸代码</h2>
+<ul class="moveIn">
+<li><pre><code>react-native init YZTApp ?</code></pre> </li>
+<li><pre><code>pod install / update  ?</code></pre></li>
+<li><pre><code>
+  pod 'React', :path => './node_modules/react-native', :subspecs => [
+    'Core',
+    'RCTImage',
+    'RCTNetwork',
+    'RCTText',
+    'RCTWebSocket',
+    # Add any other subspecs you want to use in your project
+  ]
+</code></pre></li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>问题来了，</h2>
+<ul>
+<li>node_modules 是不能提交到git仓库的。</li>
+<li>subspecs 里面引入哪些组件？</li>
+<li>如何保证OC同事拉取代码就能够直接编译运行？</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>如何解决？</h2>
+<img src="../images/pod-fuck.png" />
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>最后</h2>
+<p>    <img src="../images/pod-le.png" style="display:inline;"/>
+    ooooooooo
+    <img src="../images/pod-re.png" style="display:inline;" /></p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>终于可以开始写JS了</h2>
+<img src="../images/js1.png" />
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>技术栈</h2>
+<ul>
+<li>OC / Xcode</li>
+<li>CMD (iTerm)</li>
+<li>Node (npm)</li>
+<li>CocoaPods</li>
+<li>Git</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>而更大的坑才刚刚开始</h2>
+<ul class="moveIn">
+<li><p>在此感谢<strong>明东</strong>同学的大力相助，上代码！ </p>
+<pre><code>
+// 官方1
+jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/App.bundle"];
+jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+
+RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
+                                                    moduleName:@"App"
+                                                 launchOptions:launchOptions];
+// 官方2                                                          
+RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
+                                                moduleName:@"OurAppName"
+                                         initialProperties:props];
+// 而我们的                                                  
+self.rctBridge = [[RCTBridge alloc] initWithDelegate:self
+                                                 launchOptions:nil];
+
+</code></pre></li>
+<li>具体参见 YZTReactNativeModuleBridge.m</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<image src="../images/debug.png" />
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>开发和调试</h1>
+<ul>
+<li>执行命令行 <pre><code>cd &#39;package.json所在的文件夹&#39; &amp;&amp; npm start</code></pre></li>
+<li>去掉注释<pre><code>sourceURL = [NSURL URLWithString:@&quot;<a href="http://localhost:8081/index.ios.bundle?platform=ios&amp;dev=true" target="_blank">http://localhost:8081/index.ios.bundle?platform=ios&amp;dev=true</a>&quot;];</code></pre></li>
+<li>如果是真机， 修改localhost为自己IP <pre><code>ifconfig | grep inet</code></pre></li>
+<li>CMD + R 运行</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>开发和调试</h1>
+<ul>
+<li>control + ⌘ + z 或者 摇晃手机，打开调试菜单
+<image src="../images/debugMenu.png" style="margin-right: 50px"/><image src="../images/debugMenu2.png" /></li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>打包发布</h1>
+<ul class="moveIn">
+<li>执行命令  <pre><code>
+  react-native bundle --assets-dest ../ReactRes --entry-file ./index.ios.js --bundle-output ../AppFlagShip.jsbundle --platform ios --dev false --minify true
+  // 特别说明： 为什么放在ReactRes文件夹下
+</code></pre></li>
+<li>曾经注释的还原回去。</li>
+<li>CMD + R</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>感谢<strong>亮叔</strong>的倾情奉献，将React解耦成为一个单独的工程</h1>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>JS 底层架构</h2>
+<ul class="moveIn">
+<li>额，没时间画图了, 以后补给大家  </li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>不过有目标</h2>
+<img src="../images/target.png" />
+<ul>
+<li>目前已经实现直接放到Android里面运行， Web在研究中。</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>底层准备两个库</h2>
+<ul>
+<li>Business UI 库 <a href="https://www.npmjs.com/package/yzt-react-bus" target="_blank">https://www.npmjs.com/package/yzt-react-bus</a></li>
+<li>Base 基础库 <a href="https://www.npmjs.com/package/yzt-react-base" target="_blank">https://www.npmjs.com/package/yzt-react-base</a></li>
+<li>目标就是通过基础库来分发到IOS/Android/Web 平台，后面希望大家共同维护。</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>看一下我们的JS代码, 前方高能</h2>
+<ul>
+<li>模块化开发</li>
+<li>ES6</li>
+<li>Babel</li>
+<li>Redux / React-Redux</li>
+<li>ESlint</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>Flux 单向数据流</h2>
+<img src="../images/flux.png">
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article>
+<h2>热更新</h2>
+<img src="../images/hot-reload.png" />
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>Thanks</h1>
+<style>
+.pos-center {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+</style>
+</article></section></slide>
+        
+
+        <!-- <slide class="slide logoslide dark nobackground">
+            <article class="flexbox vcenter">
+                <h2 style="color: white;">Powered By nodePPT v1.4.1</h2>
+            </article>
+        </slide> -->
+        <div class="slideTip" id="tip"></div>
+    </slides>
+</div>
+<canvas id="drawBoard" class="draw-board" width="900" height="700"></canvas>
+<div class="progress"><span id="progress"></span></div>
+<div id="_buttons">
+    <div class="_btn-box" id="_btn-box" style="display:none;">
+        <button class="fa fa-arrow-circle-left" id="_btn-prev"></button>
+        <button class="fa fa-arrow-circle-right" id="_btn-next"></button>
+        <button class="fa fa-paint-brush" id="_btn-brush"></button>
+        <button class="fa fa-compress" id="_btn-overview" data-toggle="fa fa-expand"></button>
+    </div>
+    <button class="fa fa-bars" id="_btn-bar"  data-toggle="fa fa-close"></button>
+</div>
+<script src="./js/mixjs/lib/mix.0.3.0.min.js"></script>
+<script>
+var base = location.protocol + '//' + location.host;
+
+var path = (location.pathname + '#').split('/').filter(function(v){
+    return !!v;
+});
+path.pop();
+path = path.join('/');
+MixJS.config({
+    baseURL: [ base, path, 'js'].join('/')+'/'
+});
+
+</script>
+<script src="./js/mixjs/lib/event/broadcast.js"></script>
+<script src="./js/nodeppt.js"></script>
+<script>
+Slide.init({
+    containerID: 'container',
+    drawBoardID: 'drawBoard',
+    slideClass: '.slide',
+    buildClass: '.build',
+    progressID: 'progress',
+    transition: 'move',
+    width: 1100,
+    dir: './',
+    
+    //打开下面的注释就开启postMessage方式
+    //访问网址127.0.0.1:8080/ppt/demo#client
+    control:{
+        type: 'postMessage',
+        args:{
+            isControl:  false
+        }
+    },
+    
+    tipID: 'tip'
+});
+MixJS.loadJS('highlight/highlight.pack.js',function(){
+    hljs.tabReplace = '  ';
+    hljs.initHighlightingOnLoad();
+});
+</script>
+ 
+
+<!-- MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+  config: ["TeX-AMS-MML_HTMLorMML.js"],
+  tex2jax: {inlineMath: [['\\(','\\)']]}});
+  //['$','$'], 避免货币价格冲突
+</script>
+<script type="text/javascript" src="./js/mathjax/MathJax.js"></script>
+
+<!--placeholder-->
+</body>
+</html>
